@@ -1,0 +1,47 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Dropper_DropStick : MonoBehaviour {
+
+    Collider dropper;                   // Collider for the stick
+    float min;                          // Minimum distance the stick can move
+    float max;                          // Maximum distance the stick can move
+
+    public float speed;                 // Speed the stick moves
+    public bool beforeAction = true;    // Determines if the user has performed an action
+
+    // Use this for initialization
+    void Start () {
+        dropper = GetComponent<Collider>();
+
+        // Sets the minimum and maximum values
+        min = transform.position.x;
+        max = transform.position.x + 1.8f;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        // When the stick touches the hole, the stick becomes inactive
+        dropper.gameObject.SetActive(false);
+    }
+	
+	// Update is called once per frame
+	void Update () {
+        // Drop becomes true if the user presses the "Jump" button or the Space button in this case
+        bool drop = Input.GetButton("Jump");
+
+        // When drop is pressed, the stick gains gravity and drops
+        // An action has be implimented, and beforeAction becomes false
+        if (drop)
+        {
+            dropper.attachedRigidbody.useGravity = true;
+            beforeAction = false;
+        }
+        // If an action has not been preformed, the stick will move back and forth between the min range and the max range
+        else if(beforeAction)
+            transform.position = new Vector3(Mathf.PingPong(Time.time * speed, max - min) + min, transform.position.y, transform.position.z);
+
+
+    }
+}
