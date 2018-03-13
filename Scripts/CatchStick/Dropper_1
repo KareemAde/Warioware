@@ -1,0 +1,26 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Dropper : MonoBehaviour {
+
+    float timeLeft = 3f;    // The amount of time before the stick drops
+    Collider dropper;       // Collider for the stick
+
+	// Use this for initialization
+	void Start () {
+        dropper = GetComponent<Collider>();
+	}
+
+    // Update is called once per frame
+    void Update () {
+        // Takes time away from the amount of time left before the stick drops
+        timeLeft -= Time.deltaTime;
+
+        // If the time left goes below zero, the gravity for the stick turns on
+        if (timeLeft < 0)
+        {
+            dropper.attachedRigidbody.useGravity = true;
+        }
+    }
+}
