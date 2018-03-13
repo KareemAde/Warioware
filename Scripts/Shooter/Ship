@@ -1,0 +1,58 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Ship : MonoBehaviour {
+
+    Collider ship;                  // Collider for the ship
+
+    public float min;               // Minimum distance the ship can move
+    public float max;               // Maximum distance the ship can move
+    public float speed;             // Speed the ship moves
+    public Collider enemy;          // Collider for the enemy ship
+    public GameObject shot;         // GameObject for the shot
+    public Transform shotSpawn;     // Transform Vector 3D for the location of the shot's spawn
+    public float fireRate;          // The rate at which you can shoot
+
+    private float nextFire;         // The time left before your next shot
+
+    // Use this for initialization
+    void Start () {
+        ship = GetComponent<Collider>();
+
+        // Creates 2 instances of the enemy object
+        enemy = Instantiate(enemy, new Vector3(0.6f, 0.3f, 0f), enemy.transform.rotation);
+        enemy = Instantiate(enemy, new Vector3(-0.6f, 0.3f, 0f), enemy.transform.rotation);
+
+        // Sets the minimum and maximum values
+        min = transform.position.x;
+        max = transform.position.x + 1.6f;
+    }
+
+    // Fire creates a new bullet object and "shoots" it
+    void Fire()
+    {
+        // Create the Bullet from the Bullet Prefab
+        GameObject bullet = Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+
+        // Add velocity to the bullet
+        bullet.GetComponent<Rigidbody>().velocity = bullet.transform.up * 3;
+
+        // Destroy the bullet after 2 seconds
+        Destroy(bullet, 2.0f);
+    }
+
+
+    // Update is called once per frame
+    void Update () {
+        // The ship will move back and forth between the min range and the max range
+        transform.position = new Vector3(Mathf.PingPong(Time.time * speed, max - min) + min, transform.position.y, transform.position.z);
+
+        // If the space bar is pressed and the current time is greater than the next fire, the Fire method is called and nextfire is increased
+        if (Input.GetButton("Jump") && Time.time > nextFire)
+        {
+            Fire();
+            nextFire = Time.time + fireRate;
+        }
+    }
+}
