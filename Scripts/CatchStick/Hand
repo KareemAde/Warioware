@@ -1,0 +1,41 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Hand : MonoBehaviour {
+    Collider hand;                  // Collider for the hand
+
+    public bool touching = false;   // Determines if the hand is touching the stick
+    public Rigidbody dropper;       // Rigid body for the stick
+
+	// Use this for initialization
+	void Start () {
+        hand = GetComponent<Collider>();
+	}
+
+    void OnTriggerEnter(Collider other)
+    {
+        // Touching is true if the stick and the hand are touching
+        if (other.CompareTag("Dropper"))
+            touching = true;
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        // Touching is false if the stick and the hand are no longer touching
+        if (other.CompareTag("Dropper"))
+            touching = false;
+    }
+
+    // Update is called once per frame
+    void Update () {
+        // Grab becomes true if the user presses the "Jump" button or the Space button in this case
+        bool grab = Input.GetButton("Jump");
+
+        // The momenumt of the stick will stop if the hand and the stick are touching and if grab is true
+        if (grab && touching) 
+        {
+            dropper.Sleep();
+        }
+    }
+}
